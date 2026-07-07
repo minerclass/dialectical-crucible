@@ -11,3 +11,9 @@
   - `BARRIER_ACCESSIBLE_MAX = 20`
 - **Required Footnote**:
   - `*Note: All scores, stats, and achievements are illustrative models of the pedagogical friction framework, not validated learning assessment instruments.`
+
+## 2026-07-07: Remote Deployment & Verification
+- **GitHub Repository**: Created public repository `minerclass/dialectical-crucible`.
+- **Default Branch**: Branch `master` renamed to `main`, set as default branch on remote, and remote `master` deleted.
+- **GitHub Pages**: Enabled via REST API. Live URL: `https://minerclass.github.io/dialectical-crucible/`
+- **Verification & Cleanup Status**: Added the standardized visible disclaimer to the debrief screen and print report layout. Verified the objection catapult physics and tower collapse mechanics (`stability >= 55` threshold checked). Cleaned up accessibility focus states. Passed local verification.
