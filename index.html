@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Dialectical Crucible: Argumentation Tower</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --panel: rgba(24, 24, 27, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --teal: #38bdf8;
+      --gold: #fbbf24;
+      --red: #f87171;
+      --stone: #71717a;
+      --font-ui: "Segoe UI", -apple-system, sans-serif;
+      --font-serif: Georgia, serif;
+      --font-mono: Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(ellipse at 50% 120%, #1e1b4b 0%, #09090b 100%);
+      color: var(--text);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9, 9, 11, 0.6);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-logo {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-logo h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text);
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    }
+
+    .header-logo span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+    }
+
+    .hud-metrics {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .metric-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 90px;
+    }
+
+    .metric-pill label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .metric-pill span {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--text);
+      font-family: var(--font-mono);
+    }
+
+    .metric-pill.highlight span {
+      color: var(--teal);
+    }
+
+    .metric-pill.warning span {
+      color: var(--gold);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 15px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* LEFT COLUMN: CONSTRUCT PANEL */
+    .floor-builder {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .floor-builder-header {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--teal);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .floor-row-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pillar-selector {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pillar-selector label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .selector-btns {
+      display: flex;
+      gap: 5px;
+    }
+
+    .selector-btns button {
+      flex: 1;
+      padding: 8px 4px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .selector-btns button.selected-stone {
+      background: var(--stone);
+      border-color: #a1a1aa;
+      color: #fff;
+    }
+
+    .selector-btns button.selected-gold {
+      background: var(--gold);
+      border-color: #fbbf24;
+      color: #1e1b4b;
+    }
+
+    .selector-btns button:focus-visible {
+      outline: 2px solid var(--teal);
+    }
+
+    .brace-selector {
+      grid-column: span 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .brace-selector span {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* RIGHT COLUMN: BLUEPRINT CANVAS */
+    .blueprint-container {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1.5px solid #0284c7;
+      border-radius: 8px;
+      box-shadow: inset 0 0 20px rgba(2, 132, 199, 0.3);
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      min-height: 480px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .blueprint-svg {
+      width: 100%;
+      height: 100%;
+      min-height: 460px;
+    }
+
+    .blueprint-grid {
+      stroke: rgba(2, 132, 199, 0.1);
+      stroke-width: 1;
+    }
+
+    /* Pillar Shapes */
+    .svg-pillar-stone {
+      fill: #3f3f46;
+      stroke: #a1a1aa;
+      stroke-width: 1.5;
+    }
+
+    .svg-pillar-gold {
+      fill: #fbbf24;
+      stroke: #fff;
+      stroke-width: 1;
+      filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6));
+    }
+
+    .svg-pillar-gold.cracked {
+      stroke: var(--red);
+      stroke-width: 2;
+      animation: shakePillar 0.15s infinite;
+    }
+
+    @keyframes shakePillar {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(2px) rotate(0.5deg); }
+      100% { transform: translateX(-1px); }
+    }
+
+    .svg-brace {
+      stroke: #0ea5e9;
+      stroke-dasharray: 4, 4;
+      stroke-width: 2;
+    }
+
+    .svg-brace.active {
+      stroke: var(--teal);
+      stroke-width: 3;
+      stroke-dasharray: none;
+    }
+
+    .svg-capstone {
+      fill: #1e1b4b;
+      stroke: var(--teal);
+      stroke-width: 2.5;
+      transition: fill 0.6s, filter 0.6s;
+    }
+
+    .svg-capstone.victory {
+      fill: rgba(56, 189, 248, 0.2);
+      filter: drop-shadow(0 0 10px var(--teal));
+    }
+
+    /* Catapult animations */
+    .projectile {
+      fill: var(--red);
+      filter: drop-shadow(0 0 6px var(--red));
+      opacity: 0;
+    }
+
+    .projectile.fired {
+      opacity: 1;
+      animation: fireProjectile 1s forwards ease-in;
+    }
+
+    @keyframes fireProjectile {
+      0% { cx: 20px; cy: 100px; }
+      100% { cx: var(--target-x); cy: var(--target-y); }
+    }
+
+    /* DIALOG OVERLAY */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .dialog-card {
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      max-width: 520px;
+      width: 90%;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .dialog-header h3 {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .dialog-body {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .dialog-body select {
+      width: 100%;
+      background: #27272a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      color: var(--text);
+      font-family: inherit;
+      margin-top: 10px;
+      outline: none;
+    }
+
+    .dialog-body select:focus {
+      border-color: var(--teal);
+    }
+
+    .btn {
+      background: var(--teal);
+      color: #09090b;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.15s, filter 0.15s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* DEBRIEF SCREEN */
+    .debrief-main {
+      display: none;
+      flex-direction: column;
+      gap: 25px;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      animation: fadeParagraph 0.8s ease both;
+    }
+
+    @keyframes fadeParagraph {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .debrief-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .debrief-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .debrief-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .debrief-card h4 {
+      font-size: 1rem;
+      color: var(--teal);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .debrief-card p {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 20px;
+      text-align: center;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      background: rgba(9, 9, 11, 0.4);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-logo">
+      <h1>The Dialectical Crucible</h1>
+      <span>Argumentation Tower &middot; Crucible Test</span>
+    </div>
+    <div class="hud-metrics">
+      <div class="metric-pill" id="energyPill">
+        <label>Energy Left</label>
+        <span id="energyVal">6 EP</span>
+      </div>
+      <div class="metric-pill highlight" id="authorshipPill">
+        <label>Authorship</label>
+        <span id="authorshipVal">100%</span>
+      </div>
+      <div class="metric-pill warning" id="stabilityPill">
+        <label>Stability</label>
+        <span id="stabilityVal">100%</span>
+      </div>
+      <div class="metric-pill" id="challengePill">
+        <label>Friction</label>
+        <span id="challengeVal">30%</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="gameMain">
+    <!-- LEFT PANEL: TOWER BUILDER -->
+    <section class="card" aria-label="Crucible Construction controls">
+      <div class="card-title">
+        <span>Construct Argument Tower</span>
+        <span style="font-family: var(--font-mono); font-size: 0.8rem;">Budget: 6 Energy Units</span>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; max-height: 480px; padding-right: 6px;">
+        <!-- Level 3: Counter-claims (Top Floor) -->
+        <div class="floor-builder" id="floor-builder-3">
+          <div class="floor-builder-header">
+            <span>Level 3: Counter-claims &amp; Rebuttals</span>
+            <span class="floor-status" id="floor-status-3">Unbuilt</span>
+          </div>
+          <div class="floor-row-controls">
+            <div class="pillar-selector">
+              <label>Left Pillar</label>
+              <div class="selector-btns">
+                <button type="button" onclick="selectPillar(3, 'left', 'stone')" id="p-3-left-stone">Stone (-2)</button>
+                <button type="button" onclick="selectPillar(3, 'left', 'gold')" id="p-3-left-gold">Gold (0)</button>
+              </div>
+            </div>
+            <div class="pillar-selector">
+              <label>Right Pillar</label>
+              <div class="selector-btns">
+                <button type="button" onclick="selectPillar(3, 'right', 'stone')" id="p-3-right-stone">Stone (-2)</button>
+                <button type="button" onclick="selectPillar(3, 'right', 'gold')" id="p-3-right-gold">Gold (0)</button>
+              </div>
+            </div>
+            <div class="brace-selector">
+              <span>Cross-bracing (-1 Energy)</span>
+              <input type="checkbox" onchange="toggleBrace(3, this.checked)" id="brace-3" style="width:16px; height:16px; cursor:pointer;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Level 2: Warrants & Reasoning -->
+        <div class="floor-builder" id="floor-builder-2">
+          <div class="floor-builder-header">
+            <span>Level 2: Warrants &amp; Logic</span>
+            <span class="floor-status" id="floor-status-2">Unbuilt</span>
+          </div>
+          <div class="floor-row-controls">
+            <div class="pillar-selector">
+              <label>Left Pillar</label>
+              <div class="selector-btns">
+                <button type="button" onclick="selectPillar(2, 'left', 'stone')" id="p-2-left-stone">Stone (-2)</button>
+                <button type="button" onclick="selectPillar(2, 'left', 'gold')" id="p-2-left-gold">Gold (0)</button>
+              </div>
+            </div>
+            <div class="pillar-selector">
+              <label>Right Pillar</label>
+              <div class="selector-btns">
+                <button type="button" onclick="selectPillar(2, 'right', 'stone')" id="p-2-right-stone">Stone (-2)</button>
+                <button type="button" onclick="selectPillar(2, 'right', 'gold')" id="p-2-right-gold">Gold (0)</button>
+              </div>
+            </div>
+            <div class="brace-selector">
+              <span>Cross-bracing (-1 Energy)</span>
+              <input type="checkbox" onchange="toggleBrace(2, this.checked)" id="brace-2" style="width:16px; height:16px; cursor:pointer;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Level 1: Evidence & Grounding (Foundation) -->
+        <div class="floor-builder" id="floor-builder-1">
+          <div class="floor-builder-header">
+            <span>Level 1: Primary Evidence Foundation</span>
+            <span class="floor-status" id="floor-status-1">Unbuilt</span>
+          </div>
+          <div class="floor-row-controls">
+            <div class="pillar-selector">
+              <label>Left Pillar</label>
+              <div class="selector-btns">
+                <button type="button" onclick="selectPillar(1, 'left', 'stone')" id="p-1-left-stone">Stone (-2)</button>
+                <button type="button" onclick="selectPillar(1, 'left', 'gold')" id="p-1-left-gold">Gold (0)</button>
+              </div>
+            </div>
+            <div class="pillar-selector">
+              <label>Right Pillar</label>
+              <div class="selector-btns">
+                <button type="button" onclick="selectPillar(1, 'right', 'stone')" id="p-1-right-stone">Stone (-2)</button>
+                <button type="button" onclick="selectPillar(1, 'right', 'gold')" id="p-1-right-gold">Gold (0)</button>
+              </div>
+            </div>
+            <div class="brace-selector">
+              <span>Cross-bracing (-1 Energy)</span>
+              <input type="checkbox" onchange="toggleBrace(1, this.checked)" id="brace-1" style="width:16px; height:16px; cursor:pointer;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" style="margin-top: 15px; width: 100%; padding: 14px;" id="btnPlaceCapstone" onclick="triggerCapstoneEvaluation()" disabled>
+        Place Thesis Capstone &rarr;
+      </button>
+    </section>
+
+    <!-- RIGHT PANEL: ARGUMENT TOWER BLUEPRINT -->
+    <section class="card" aria-label="Blue print representation of the argument tower">
+      <div class="card-title">Argument Tower Blueprint</div>
+      <div class="blueprint-container">
+        <svg class="blueprint-svg" id="blueprintSvg" viewBox="0 0 400 500">
+          <!-- Grid lines for blueprint effect -->
+          <line x1="0" y1="50" x2="400" y2="50" class="blueprint-grid" />
+          <line x1="0" y1="100" x2="400" y2="100" class="blueprint-grid" />
+          <line x1="0" y1="150" x2="400" y2="150" class="blueprint-grid" />
+          <line x1="0" y1="200" x2="400" y2="200" class="blueprint-grid" />
+          <line x1="0" y1="250" x2="400" y2="250" class="blueprint-grid" />
+          <line x1="0" y1="300" x2="400" y2="300" class="blueprint-grid" />
+          <line x1="0" y1="350" x2="400" y2="350" class="blueprint-grid" />
+          <line x1="0" y1="400" x2="400" y2="400" class="blueprint-grid" />
+          <line x1="100" y1="0" x2="100" y2="500" class="blueprint-grid" />
+          <line x1="200" y1="0" x2="200" y2="500" class="blueprint-grid" />
+          <line x1="300" y1="0" x2="300" y2="500" class="blueprint-grid" />
+
+          <!-- Dynamic SVG Group for structural blocks -->
+          <g id="towerBlocks">
+            <!-- Floor 1 -->
+            <rect id="rect-1-left" x="90" y="360" width="30" height="90" class="svg-pillar-stone" style="display:none;" />
+            <rect id="rect-1-right" x="280" y="360" width="30" height="90" class="svg-pillar-stone" style="display:none;" />
+            <line id="line-brace-1a" x1="120" y1="360" x2="280" y2="450" class="svg-brace" style="display:none;" />
+            <line id="line-brace-1b" x1="280" y1="360" x2="120" y2="450" class="svg-brace" style="display:none;" />
+            <rect id="beam-1" x="70" y="350" width="260" height="10" fill="#0ea5e9" style="display:none;" />
+
+            <!-- Floor 2 -->
+            <rect id="rect-2-left" x="90" y="260" width="30" height="90" class="svg-pillar-stone" style="display:none;" />
+            <rect id="rect-2-right" x="280" y="260" width="30" height="90" class="svg-pillar-stone" style="display:none;" />
+            <line id="line-brace-2a" x1="120" y1="260" x2="280" y2="350" class="svg-brace" style="display:none;" />
+            <line id="line-brace-2b" x1="280" y1="260" x2="120" y2="350" class="svg-brace" style="display:none;" />
+            <rect id="beam-2" x="70" y="250" width="260" height="10" fill="#0ea5e9" style="display:none;" />
+
+            <!-- Floor 3 -->
+            <rect id="rect-3-left" x="90" y="160" width="30" height="90" class="svg-pillar-stone" style="display:none;" />
+            <rect id="rect-3-right" x="280" y="160" width="30" height="90" class="svg-pillar-stone" style="display:none;" />
+            <line id="line-brace-3a" x1="120" y1="160" x2="280" y2="250" class="svg-brace" style="display:none;" />
+            <line id="line-brace-3b" x1="280" y1="160" x2="120" y2="250" class="svg-brace" style="display:none;" />
+            <rect id="beam-3" x="70" y="150" width="260" height="10" fill="#0ea5e9" style="display:none;" />
+
+            <!-- Capstone (Thesis Pediment) -->
+            <polygon id="capstone" points="70,150 330,150 200,90" class="svg-capstone" style="display:none;" />
+            <text id="capstoneText" x="200" y="140" fill="var(--text-muted)" font-family="var(--font-serif)" font-size="10" text-anchor="middle" style="display:none;">THESIS CAPSTONE</text>
+          </g>
+
+          <!-- Catapult Projectiles -->
+          <circle id="proj-1" cx="20" cy="100" r="10" class="projectile" />
+          <circle id="proj-2" cx="20" cy="100" r="10" class="projectile" />
+          <circle id="proj-3" cx="20" cy="100" r="10" class="projectile" />
+
+          <!-- Foundation Ground Line -->
+          <line x1="20" y1="450" x2="380" y2="450" stroke="#0ea5e9" stroke-width="4" />
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <!-- DEBRIEF SCREEN -->
+  <main class="debrief-main" id="debriefMain">
+    <div class="card" style="padding: 30px;">
+      <div class="card-title">
+        <span>Crucible Evaluation Report</span>
+        <span style="font-family: var(--font-mono); font-size: 0.8rem;" id="debriefScore">Stability: 100%</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 15px;">
+        <h2 style="font-size: 1.8rem; font-weight: bold; font-family: var(--font-serif);" id="debriefTitle">Report Title</h2>
+        <p id="debriefSummary" style="font-size: 1rem; line-height: 1.6; color: var(--text-muted);">
+          Assessment report text...
+        </p>
+
+        <div class="debrief-grid">
+          <div class="debrief-card">
+            <h4>Calibrations Met</h4>
+            <p><strong>Existential Authorship:</strong> <span id="finalAuth"></span>%</p>
+            <p><strong>Structural Stability:</strong> <span id="finalStability"></span>%</p>
+            <p><strong>Desirable Friction:</strong> <span id="finalFriction"></span>%</p>
+          </div>
+          <div class="debrief-card">
+            <h4>Pillar Analysis</h4>
+            <p id="finalReportDetails">Analysis details...</p>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border); margin-top: 20px; padding-top: 15px; display: flex; gap: 15px;">
+          <button class="btn" onclick="location.reload()">Rebuild Tower</button>
+          <button class="btn ghost" onclick="printReport()">Print Report</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- DIALOG OVERLAY -->
+  <div class="overlay" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <div class="dialog-card">
+      <div class="dialog-header">
+        <div class="dialog-avatar" id="dialogAvatar">📜</div>
+        <h3 id="dialogTitle">Existential Defense</h3>
+      </div>
+      <div class="dialog-body" id="dialogBody">
+        Prompt content...
+      </div>
+      <div class="dialog-footer">
+        <button class="btn" id="dialogBtn">Submit Defense</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Micah J. Miner. Extended from the *Pedagogical Friction* Dissertation Framework.</p>
+    <p style="margin-top: 5px; opacity: 0.7;">*Note: All scores, stats, and achievements are illustrative models of the pedagogical friction framework, not validated learning assessment instruments.</p>
+  </footer>
+
+  <script>
+    // Constants
+    const PRODUCTIVE_CHALLENGE = [55, 80];
+    const BARRIER_ACCESSIBLE_MAX = 20;
+
+    // Game state
+    const state = {
+      energy: 6,
+      authorship: 100,
+      stability: 100,
+      challenge: 30,
+      structure: {
+        1: { left: null, right: null, brace: false },
+        2: { left: null, right: null, brace: false },
+        3: { left: null, right: null, brace: false }
+      },
+      capstonePlaced: false
+    };
+
+    // Existential prompts
+    const defensePrompts = {
+      1: {
+        title: "Level 1: Grounding Evidence Sources",
+        body: `
+          <p>Explain the grounding origins for the primary historical evidence supporting your tower base:</p>
+          <select id="defenseSelect">
+            <option value="scrambled">"Generated historical synopsis summarizing Freedman's Bureau outputs via prompt."</option>
+            <option value="valid">"Embodied letters and direct transcript analysis crosschecked at the archives."</option>
+            <option value="hallucinated">"Unverified online historical summary with missing citation indexes."</option>
+          </select>
+        `
+      },
+      2: {
+        title: "Level 2: Logic and Warrants Defense",
+        body: `
+          <p>How did you verify the causal logic linking black codes to labor restrictiveness?</p>
+          <select id="defenseSelect">
+            <option value="hallucinated">"AI model templates indicating standard historical causes without primary support."</option>
+            <option value="valid">"Comparative analysis of regional legislation templates alongside freedmen testimonies."</option>
+            <option value="scrambled">"Scrambled paragraph draft containing general textbook reasoning."</option>
+          </select>
+        `
+      },
+      3: {
+        title: "Level 3: Counter-claims Verification",
+        body: `
+          <p>What source supports the rebuttal arguing that Johnson's policies weakened Reconstruction?</p>
+          <select id="defenseSelect">
+            <option value="scrambled">"AI generated counter-claims summarizing the debate in neat blocks."</option>
+            <option value="valid">"Archival Johnson veto declarations corroborated with Freedmen local news responses."</option>
+            <option value="hallucinated">"Blog article detailing executive Reconstruction histories with no index support."</option>
+          </select>
+        `
+      }
+    };
+
+    // Update HUD
+    function updateHUD() {
+      document.getElementById("energyVal").textContent = `${state.energy} EP`;
+      document.getElementById("authorshipVal").textContent = `${state.authorship}%`;
+      document.getElementById("stabilityVal").textContent = `${state.stability}%`;
+      document.getElementById("challengeVal").textContent = `${state.challenge}%`;
+
+      // Warn energy
+      const energyPill = document.getElementById("energyPill");
+      if (state.energy <= 1) {
+        energyPill.style.borderColor = "var(--red)";
+      } else {
+        energyPill.style.borderColor = "var(--border)";
+      }
+
+      // Check capstone viability
+      const capstoneBtn = document.getElementById("btnPlaceCapstone");
+      const ready = state.structure[1].left && state.structure[1].right &&
+                    state.structure[2].left && state.structure[2].right &&
+                    state.structure[3].left && state.structure[3].right;
+      capstoneBtn.disabled = !ready;
+    }
+
+    // Toggle Bracing
+    function toggleBrace(floor, checked) {
+      if (checked) {
+        if (state.energy < 1) {
+          alert("Insufficient Energy Points!");
+          document.getElementById(`brace-${floor}`).checked = false;
+          return;
+        }
+        state.energy -= 1;
+        state.structure[floor].brace = true;
+        state.challenge += 10;
+      } else {
+        state.energy += 1;
+        state.structure[floor].brace = false;
+        state.challenge -= 10;
+      }
+      state.challenge = Math.max(10, Math.min(100, state.challenge));
+      updateHUD();
+      renderBlueprint();
+    }
+
+    // Select Pillar
+    function selectPillar(floor, side, type) {
+      const current = state.structure[floor][side];
+
+      if (type === "stone") {
+        if (current === "stone") return; // No change
+        
+        // Calculate energy cost delta
+        let cost = 2;
+        if (current === "gold") cost = 2; // Swapping gold to stone costs 2
+        
+        if (state.energy < cost) {
+          alert("Insufficient Energy Points to place manual stone pillar!");
+          return;
+        }
+        state.energy -= cost;
+        state.structure[floor][side] = "stone";
+        state.challenge += 12;
+      } else {
+        // Gold (AI-Bypass, cost 0)
+        if (current === "gold") return;
+        
+        // Reclaim energy if swapping stone to gold
+        if (current === "stone") {
+          state.energy += 2;
+          state.challenge -= 12;
+        }
+        state.structure[floor][side] = "gold";
+      }
+
+      state.challenge = Math.max(10, Math.min(100, state.challenge));
+      updateHUD();
+      renderBlueprint();
+      updateSelectorButtons(floor, side, type);
+
+      // Prompt Existential Defense if this floor's pillars are both built for the first time
+      if (state.structure[floor].left && state.structure[floor].right && !state.structure[floor].defended) {
+        triggerExistentialDefense(floor);
+      }
+    }
+
+    function updateSelectorButtons(floor, side, selected) {
+      const stoneBtn = document.getElementById(`p-${floor}-${side}-stone`);
+      const goldBtn = document.getElementById(`p-${floor}-${side}-gold`);
+      
+      stoneBtn.classList.remove("selected-stone");
+      goldBtn.classList.remove("selected-gold");
+      
+      if (selected === "stone") {
+        stoneBtn.classList.add("selected-stone");
+      } else if (selected === "gold") {
+        goldBtn.classList.add("selected-gold");
+      }
+    }
+
+    // Render Blueprint SVG elements
+    function renderBlueprint() {
+      for (let floor = 1; floor <= 3; floor++) {
+        const leftPillar = document.getElementById(`rect-${floor}-left`);
+        const rightPillar = document.getElementById(`rect-${floor}-right`);
+        const braceA = document.getElementById(`line-brace-${floor}-a`);
+        const braceB = document.getElementById(`line-brace-${floor}-b`);
+        const beam = document.getElementById(`beam-${floor}`);
+
+        const leftVal = state.structure[floor].left;
+        const rightVal = state.structure[floor].right;
+
+        // Render left
+        if (leftVal) {
+          leftPillar.style.display = "block";
+          leftPillar.className = leftVal === "stone" ? "svg-pillar-stone" : "svg-pillar-gold";
+        } else {
+          leftPillar.style.display = "none";
+        }
+
+        // Render right
+        if (rightVal) {
+          rightPillar.style.display = "block";
+          rightPillar.className = rightVal === "stone" ? "svg-pillar-stone" : "svg-pillar-gold";
+        } else {
+          rightPillar.style.display = "none";
+        }
+
+        // Render braces
+        if (state.structure[floor].brace) {
+          braceA.style.display = "block";
+          braceB.style.display = "block";
+          braceA.classList.add("active");
+          braceB.classList.add("active");
+        } else if (leftVal && rightVal) {
+          // Default thin visual guides
+          braceA.style.display = "block";
+          braceB.style.display = "block";
+          braceA.classList.remove("active");
+          braceB.classList.remove("active");
+        } else {
+          braceA.style.display = "none";
+          braceB.style.display = "none";
+        }
+
+        // Floor beam
+        if (leftVal || rightVal) {
+          beam.style.display = "block";
+        } else {
+          beam.style.display = "none";
+        }
+      }
+
+      // Capstone
+      const cap = document.getElementById("capstone");
+      const capText = document.getElementById("capstoneText");
+      if (state.capstonePlaced) {
+        cap.style.display = "block";
+        capText.style.display = "block";
+      } else {
+        cap.style.display = "none";
+        capText.style.display = "none";
+      }
+    }
+
+    // Modal Defense
+    function triggerExistentialDefense(floor) {
+      const cfg = defensePrompts[floor];
+      
+      const overlay = document.getElementById("dialogOverlay");
+      const title = document.getElementById("dialogTitle");
+      const body = document.getElementById("dialogBody");
+      const btn = document.getElementById("dialogBtn");
+      
+      title.textContent = cfg.title;
+      body.innerHTML = cfg.body;
+      
+      overlay.classList.add("active");
+      
+      // Clone btn to remove old event listeners
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      newBtn.focus();
+      
+      newBtn.addEventListener("click", () => {
+        const select = document.getElementById("defenseSelect");
+        const val = select.value;
+        
+        if (val === "valid") {
+          state.authorship = Math.min(100, state.authorship + 0); // Holds strong
+        } else if (val === "scrambled") {
+          state.authorship = Math.max(10, state.authorship - 20);
+        } else {
+          // Hallucinated
+          state.authorship = Math.max(10, state.authorship - 40);
+        }
+        
+        state.structure[floor].defended = true;
+        overlay.classList.remove("active");
+        updateHUD();
+      });
+    }
+
+    function triggerCapstoneEvaluation() {
+      state.capstonePlaced = true;
+      renderBlueprint();
+      updateHUD();
+      
+      // Calculate stability based on stone support and bracing
+      let stoneCount = 0;
+      let goldCount = 0;
+      let braceCount = 0;
+      
+      for (let f = 1; f <= 3; f++) {
+        if (state.structure[f].left === "stone") stoneCount++; else goldCount++;
+        if (state.structure[f].right === "stone") stoneCount++; else goldCount++;
+        if (state.structure[f].brace) braceCount++;
+      }
+      
+      // Base stability starts at 40%, rises with stone and bracing
+      state.stability = Math.round(30 + (stoneCount * 10) + (braceCount * 10));
+      state.stability = Math.min(100, state.stability);
+      updateHUD();
+
+      // Show evaluation dialog
+      const evalText = `
+        <p>Your Argument Tower supporting the Thesis Capstone is complete.</p>
+        <p><strong>Initial Stability:</strong> ${state.stability}%</p>
+        <p>Objection catapults from opposing peer reviews are preparing to fire at your tower's structural joints. AI-bypassed pillars (Gold-clad) are highly vulnerable to shear impact. Manual pillars (Stone) can absorb hits.</p>
+      `;
+      
+      showDialogOverlay("🎯", "Objection Bombardment Preparing", evalText, "Start Bombardment Test", runCatapultBombardment);
+    }
+
+    function showDialogOverlay(avatar, title, bodyHTML, btnText, callback) {
+      const overlay = document.getElementById("dialogOverlay");
+      const diaAvatar = document.getElementById("dialogAvatar");
+      const diaTitle = document.getElementById("dialogTitle");
+      const diaBody = document.getElementById("dialogBody");
+      const diaBtn = document.getElementById("dialogBtn");
+      
+      diaAvatar.textContent = avatar;
+      diaTitle.textContent = title;
+      diaBody.innerHTML = bodyHTML;
+      diaBtn.textContent = btnText;
+      
+      overlay.classList.add("active");
+      
+      const newBtn = diaBtn.cloneNode(true);
+      diaBtn.parentNode.replaceChild(newBtn, diaBtn);
+      newBtn.focus();
+      
+      newBtn.addEventListener("click", () => {
+        overlay.classList.remove("active");
+        if (callback) callback();
+      });
+    }
+
+    // Objection Projectiles Launch
+    function runCatapultBombardment() {
+      // Deactivate construction UI
+      document.getElementById("btnPlaceCapstone").disabled = true;
+      document.querySelectorAll(".selector-btns button").forEach(b => b.disabled = true);
+      document.querySelectorAll(".brace-selector input").forEach(i => i.disabled = true);
+
+      // Fire 3 wave projectiles
+      fireProjectileWave(1, 380, 205); // Level 1 right joint
+    }
+
+    function fireProjectileWave(wave, targetX, targetY) {
+      const proj = document.getElementById(`proj-${wave}`);
+      
+      // Set target coordinates as CSS variables
+      proj.style.setProperty("--target-x", `${targetX}px`);
+      proj.style.setProperty("--target-y", `${targetY}px`);
+      
+      proj.classList.add("fired");
+
+      setTimeout(() => {
+        // Impact occurs!
+        handleImpact(wave);
+        
+        if (wave < 3) {
+          // Launch next wave
+          setTimeout(() => {
+            if (wave === 1) fireProjectileWave(2, 105, 305); // Level 2 left joint
+            if (wave === 2) fireProjectileWave(3, 295, 405); // Level 3 right joint
+          }, 1200);
+        } else {
+          // Final check
+          setTimeout(checkCrucibleSuccess, 1500);
+        }
+      }, 1000);
+    }
+
+    function handleImpact(wave) {
+      // Find impacted floor and pillars
+      let impactedPillar = null;
+      let impactedFloor = wave; // 1, 2, or 3
+      let side = wave === 2 ? "left" : "right";
+
+      const type = state.structure[impactedFloor][side];
+      const el = document.getElementById(`rect-${impactedFloor}-${side}`);
+
+      if (type === "gold") {
+        // Gold cladding shatters!
+        el.classList.add("cracked");
+        // Shake blueprint
+        document.getElementById("blueprintSvg").animate([
+          { transform: "translate(1px, 1px) rotate(0deg)" },
+          { transform: "translate(-1px, -2px) rotate(-1deg)" },
+          { transform: "translate(-3px, 0px) rotate(1deg)" },
+          { transform: "translate(0px, 2px) rotate(0deg)" }
+        ], { duration: 250 });
+
+        // Collapse stability
+        state.stability = Math.max(0, state.stability - 30);
+        updateHUD();
+      } else {
+        // Stone holds
+        el.animate([
+          { stroke: "var(--teal)", strokeWidth: 4 },
+          { stroke: "#a1a1aa", strokeWidth: 1.5 }
+        ], { duration: 600 });
+      }
+    }
+
+    function checkCrucibleSuccess() {
+      const passed = state.stability >= 55;
+      
+      const cap = document.getElementById("capstone");
+      if (passed) {
+        cap.classList.add("victory");
+      }
+
+      showDialogOverlay(
+        passed ? "🏆" : "💥",
+        passed ? "Crucible Withstood!" : "Tower Collapse!",
+        passed
+          ? `<p><strong>Success!</strong> Your Argument Tower survived the review bombardment. With a final stability of ${state.stability}%, the stone foundations absorbed the peer objections. Your Thesis Capstone is locked and verified.</p>`
+          : `<p><strong>Failure!</strong> The tower collapsed. The objection projectiles hit the vulnerable AI-bypassed joints, shearing the gold-clad pillars. Lacking manual stone foundations on critical levels, the entire structural load gave way.</p>`,
+        "View Evaluation Details",
+        () => showDebriefScreen(passed)
+      );
+    }
+
+    function showDebriefScreen(passed) {
+      document.getElementById("gameMain").style.display = "none";
+      document.getElementById("debriefMain").style.display = "flex";
+
+      const debriefTitle = document.getElementById("debriefTitle");
+      const debriefSummary = document.getElementById("debriefSummary");
+      const finalAuth = document.getElementById("finalAuth");
+      const finalStability = document.getElementById("finalStability");
+      const finalFriction = document.getElementById("finalFriction");
+      const finalReportDetails = document.getElementById("finalReportDetails");
+      const debriefScore = document.getElementById("debriefScore");
+
+      finalAuth.textContent = state.authorship;
+      finalStability.textContent = state.stability;
+      finalFriction.textContent = state.challenge;
+      debriefScore.textContent = `Stability: ${state.stability}%`;
+
+      if (passed) {
+        debriefTitle.textContent = "Certified Dialectical Success";
+        debriefSummary.innerHTML = `
+          <strong>Congratulations!</strong> You constructed a structurally sound argument tower. By investing your energy points in heavy manual stone pillars on critical levels and integrating structural cross-bracing, you calibrated the friction (Challenge: ${state.challenge}%) perfectly. The tower successfully absorbed objections while protecting an Existential Authorship rating of ${state.authorship}%.
+        `;
+        finalReportDetails.innerHTML = `
+          <strong>Evaluation: Robust Support</strong><br>
+          Your thesis is grounded in active, verifiable inquiry rather than hollow template automation. The student stands behind the words.
+        `;
+      } else {
+        debriefTitle.textContent = "Dialectical Structural Shear";
+        debriefSummary.innerHTML = `
+          <strong>The tower sheared and collapsed.</strong> By prioritizing easy AI gold-clad pillars to bypass energy constraints, you built a visually beautiful but structurally hollow tower. When exposed to peer critiques (objection catapults), the bypassed levels fractured instantly.
+        `;
+        finalReportDetails.innerHTML = `
+          <strong>Evaluation: Hollow Polish Failure</strong><br>
+          This outcome illustrates the risk of <strong>unproductive success</strong>: a visually polished argument capstone is useless if the supporting evidence and warrants are hollow.
+        `;
+      }
+    }
+
+    function printReport() {
+      const printWindow = window.open("", "_blank");
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>The Dialectical Crucible - Evaluation Summary</title>
+          <style>
+            body { font-family: Georgia, serif; line-height: 1.6; padding: 40px; color: #111; max-width: 800px; margin: auto; }
+            h1 { border-bottom: 2px solid #111; padding-bottom: 10px; }
+            .meta { background: #f4f4f5; padding: 15px; border-radius: 6px; margin: 20px 0; border: 1px solid #ddd; }
+            .footer { margin-top: 50px; font-size: 0.8rem; color: #777; text-align: center; border-top: 1px solid #ccc; padding-top: 10px; }
+          </style>
+        </head>
+        <body>
+          <h1>The Dialectical Crucible: Calibration Report</h1>
+          <p><strong>Educator:</strong> Micah Miner / Technology Leadership Practitioner</p>
+          
+          <div class="meta">
+            <strong>Argument Stability Rating:</strong> ${state.stability}%<br>
+            <strong>Existential Authorship Score:</strong> ${state.authorship}%<br>
+            <strong>Calibration Friction:</strong> ${state.challenge}%<br>
+            <strong>Objection Catapult Outcome:</strong> ${state.stability >= 55 ? "WITHSTOOD (Valid Thesis)" : "COLLAPSED (Hollow Support)"}
+          </div>
+          
+          <h2>Structure Assessment</h2>
+          <p>${document.getElementById("debriefSummary").innerHTML}</p>
+          
+          <div class="footer">
+            Generated on ${new Date().toLocaleDateString()} &middot; Pedagogical Friction Research Framework &middot; *Note: All scores and calibrations are illustrative models.
+          </div>
+          
+          <script>
+            window.onload = function() { window.print(); }
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    // Start
+    updateHUD();
+    renderBlueprint();
+  </script>
+</body>
+</html>
