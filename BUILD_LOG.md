@@ -18,3 +18,9 @@
 - **GitHub Pages**: Enabled via REST API. Live URL: `https://minerclass.github.io/dialectical-crucible/`
 - **Verification & Cleanup Status**: Added the standardized visible disclaimer to the debrief screen and print report layout. Verified the objection catapult physics and tower collapse mechanics (`stability >= 55` threshold checked). Cleaned up accessibility focus states. Passed local verification.
 ── QA fixes (2026-07-08): see commit log for the Phase 2 QA-pass fixes; full defect analysis in the session review.
+
+## 2026-07-08: Phase 3 Upgrades
+- Added prediction beat before the review bombardment starts, asking players how many of the 6 pillars will crack under the pressure.
+- Map keys 0–6 for keyboard prediction, and added forecastResult feedback on the final debrief screen.
+- Implemented mobile media queries for viewport widths under 480px (scaling down the SVG blueprint container and main layout grid).
+- Verified playthrough and replay with zero console errors.

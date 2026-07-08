@@ -449,6 +449,29 @@
       }
     }
 
+    /* Mobile Responsive Pass at 390px */
+    @media (max-width: 480px) {
+      .blueprint-container {
+        min-height: 320px;
+      }
+      .blueprint-svg {
+        min-height: 300px;
+      }
+      main {
+        padding: 8px;
+        gap: 12px;
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 12px;
+      }
+      .dialog-card {
+        width: 95%;
+        margin: 10px;
+        padding: 16px;
+      }
+    }
+
     .debrief-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border);
@@ -690,6 +713,7 @@
             <p><strong>Existential Authorship:</strong> <span id="finalAuth"></span>%</p>
             <p><strong>Structural Stability:</strong> <span id="finalStability"></span>%</p>
             <p><strong>Desirable Friction:</strong> <span id="finalFriction"></span>%</p>
+            <p id="forecastResult" style="margin-top: 10px; font-weight: bold; color: var(--gold);"></p>
           </div>
           <div class="debrief-card">
             <h4>Pillar Analysis</h4>
@@ -743,7 +767,8 @@
         2: { left: null, right: null, brace: false },
         3: { left: null, right: null, brace: false }
       },
-      capstonePlaced: false
+      capstonePlaced: false,
+      prediction: null
     };
 
     // Existential prompts
@@ -1051,7 +1076,62 @@
         <p>Objection catapults from opposing peer reviews are preparing to fire at your tower's structural joints. AI-bypassed pillars (Gold-clad) are highly vulnerable to shear impact. Manual pillars (Stone) can absorb hits.</p>
       `;
       
-      showDialogOverlay("🎯", "Objection Bombardment Preparing", evalText, "Start Bombardment Test", runCatapultBombardment);
+      showDialogOverlay("🎯", "Objection Bombardment Preparing", evalText, "Proceed to Prediction", () => {
+        showPredictionOverlay(runCatapultBombardment);
+      });
+    }
+
+    function showPredictionOverlay(callback) {
+      const overlay = document.getElementById("dialogOverlay");
+      const diaAvatar = document.getElementById("dialogAvatar");
+      const diaTitle = document.getElementById("dialogTitle");
+      const diaBody = document.getElementById("dialogBody");
+      const footer = document.querySelector(".dialog-footer");
+      
+      diaAvatar.textContent = "🔮";
+      diaTitle.textContent = "Forecast Resistance";
+      
+      let html = `<p>Before the review bombardment begins, forecast the damage. <strong>How many pillars will crack under the pressure of peer objections?</strong> (Select 0 to 6):</p>`;
+      html += `<div style="display: flex; gap: 8px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">`;
+      for (let i = 0; i <= 6; i++) {
+        html += `<button class="btn forecast-btn" data-forecast="${i}" style="min-width: 40px; padding: 10px;">${i}</button>`;
+      }
+      html += `</div>`;
+      html += `<p style="font-size: 0.8rem; color: var(--gold); text-align: center; margin-top: 10px;">You can also press keys 0 to 6 on your keyboard.</p>`;
+      
+      diaBody.innerHTML = html;
+      footer.innerHTML = ""; // clear standard button
+      
+      overlay.classList.add("active");
+      
+      // Wire up buttons
+      const buttons = diaBody.querySelectorAll(".forecast-btn");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const val = parseInt(btn.dataset.forecast, 10);
+          selectForecast(val);
+        });
+      });
+      
+      // Keyboard handler
+      function handleKey(e) {
+        if (e.key >= "0" && e.key <= "6") {
+          const val = parseInt(e.key, 10);
+          selectForecast(val);
+        }
+      }
+      document.addEventListener("keydown", handleKey);
+      
+      function selectForecast(val) {
+        state.prediction = val;
+        document.removeEventListener("keydown", handleKey);
+        overlay.classList.remove("active");
+        
+        // Restore standard footer button for future dialogs
+        footer.innerHTML = `<button class="btn" id="dialogBtn">Continue</button>`;
+        
+        callback();
+      }
     }
 
     function showDialogOverlay(avatar, title, bodyHTML, btnText, callback) {
@@ -1182,6 +1262,21 @@
       finalStability.textContent = state.stability;
       finalFriction.textContent = state.challenge;
       debriefScore.textContent = `Stability: ${state.stability}%`;
+
+      const crackedCount = document.querySelectorAll(".cracked").length;
+      const frEl = document.getElementById("forecastResult");
+      if (state.prediction !== undefined && state.prediction !== null) {
+        const hit = state.prediction === crackedCount;
+        if (hit) {
+          frEl.innerHTML = `<strong>Forecast:</strong> Called it - ${crackedCount} cracked. Your read of the structure matched the review bombardment.`;
+          frEl.style.color = "var(--teal)";
+        } else {
+          frEl.innerHTML = `<strong>Forecast:</strong> You predicted ${state.prediction}; ${crackedCount} cracked. Misreading structural resistance leads to unbalanced classrooms.`;
+          frEl.style.color = "var(--red)";
+        }
+      } else {
+        frEl.innerHTML = "";
+      }
 
       if (passed) {
         debriefTitle.textContent = "Certified Dialectical Success";
