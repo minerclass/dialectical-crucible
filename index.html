@@ -1091,13 +1091,13 @@
       diaAvatar.textContent = "🔮";
       diaTitle.textContent = "Forecast Resistance";
       
-      let html = `<p>Before the review bombardment begins, forecast the damage. <strong>How many pillars will crack under the pressure of peer objections?</strong> (Select 0 to 6):</p>`;
+      let html = `<p>The catapults will strike <strong>three joints</strong> — the right of Level 1, the left of Level 2, and the right of Level 3. Before they fire, forecast the damage. <strong>How many of those three pillars will crack?</strong> (Select 0 to 3):</p>`;
       html += `<div style="display: flex; gap: 8px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">`;
-      for (let i = 0; i <= 6; i++) {
+      for (let i = 0; i <= 3; i++) {
         html += `<button class="btn forecast-btn" data-forecast="${i}" style="min-width: 40px; padding: 10px;">${i}</button>`;
       }
       html += `</div>`;
-      html += `<p style="font-size: 0.8rem; color: var(--gold); text-align: center; margin-top: 10px;">You can also press keys 0 to 6 on your keyboard.</p>`;
+      html += `<p style="font-size: 0.8rem; color: var(--gold); text-align: center; margin-top: 10px;">You can also press keys 0 to 3 on your keyboard.</p>`;
       
       diaBody.innerHTML = html;
       footer.innerHTML = ""; // clear standard button
@@ -1115,7 +1115,7 @@
       
       // Keyboard handler
       function handleKey(e) {
-        if (e.key >= "0" && e.key <= "6") {
+        if (e.key >= "0" && e.key <= "3") {
           const val = parseInt(e.key, 10);
           selectForecast(val);
         }
