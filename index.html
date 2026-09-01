@@ -4,12 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Dialectical Crucible: Argumentation Tower</title>
+  <link rel="stylesheet" href="https://minerclass.github.io/tokens.css">
   <style>
     :root {
       --bg: #09090b;
       --panel: rgba(24, 24, 27, 0.75);
       --border: rgba(255, 255, 255, 0.08);
-      --text: #f4f4f5;
+      /* Ground and the indigo crucible gradient stay local: they are this
+         piece's subject. Only the text joins the shared ink. */
+      --text: var(--mjm-ink, #f4f4f5);
+      --mjm-accent: var(--mjm-blue, #38bdf8);
       --text-muted: #a1a1aa;
       --teal: #38bdf8;
       --gold: #fbbf24;
