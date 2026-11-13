@@ -965,7 +965,7 @@
         // Render left
         if (leftVal) {
           leftPillar.style.display = "block";
-          leftPillar.className = leftVal === "stone" ? "svg-pillar-stone" : "svg-pillar-gold";
+          leftPillar.setAttribute("class", leftVal === "stone" ? "svg-pillar-stone" : "svg-pillar-gold");
         } else {
           leftPillar.style.display = "none";
         }
@@ -973,7 +973,7 @@
         // Render right
         if (rightVal) {
           rightPillar.style.display = "block";
-          rightPillar.className = rightVal === "stone" ? "svg-pillar-stone" : "svg-pillar-gold";
+          rightPillar.setAttribute("class", rightVal === "stone" ? "svg-pillar-stone" : "svg-pillar-gold");
         } else {
           rightPillar.style.display = "none";
         }
